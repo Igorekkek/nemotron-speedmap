@@ -1,0 +1,20 @@
+# Семейство 1: база против n-грамм и черновика 4B на одной и той же 9B.
+name: ngram-vs-draft-9b
+family: 1
+hypothesis: n-граммы ускоряют 9B на пересказе и RAG, черновик 4B — на всех задачах, но меньше 1,5×
+device: kaggle-t4x2
+mode: speed
+model: nano-9b-v2
+quant: Q4_K_M
+dataset: {name: spec_bench, n: 120, seed: 0, tasks: [summarization, rag, qa]}
+gen: {max_tokens: 256, temperature: 0, reasoning: "off"}
+repeats: 3
+base:
+  engine: llamacpp
+  flags: {ngl: 99, fa: "on"}
+variants:
+  - name: ngram-mod
+    flags: {spec_type: ngram-mod}
+  - name: draft-4b
+    flags: {model_draft: "nano-4b:Q4_K_M", ngld: 99, spec_draft_device: CUDA1}
+    sweep: {spec_draft_n_max: [1, 2, 3, 4, 6]}

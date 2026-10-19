@@ -1,0 +1,16 @@
+# Семейство 2: бюджет рассуждения. База — рассуждение без ограничений.
+name: reasoning-budget-9b
+family: 2
+hypothesis: бюджет 512–1024 токенов сохраняет точность 9B на GSM8K и сокращает время до ответа вдвое
+device: kaggle-t4x2
+mode: quality
+model: nano-9b-v2
+quant: Q4_K_M
+dataset: {name: gsm8k, n: 200, seed: 0}
+gen: {max_tokens: 4096, temperature: 0.6, top_p: 0.95, reasoning: "on"}
+base:
+  engine: llamacpp
+  flags: {ngl: 99, fa: "on", np: 8, ctx: 40960}   # контекст делится между слотами: 40960 / 8 = 5120 на слот
+variants:
+  - name: budget
+    sweep: {gen.reasoning_budget: [0, 256, 512, 1024, 2048]}

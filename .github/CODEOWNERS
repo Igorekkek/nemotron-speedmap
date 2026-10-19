@@ -1,0 +1,11 @@
+# Файлы контракта ядра смотрят все трое (CLAUDE.md, правило 4; docs/core_api.md, раздел 14).
+# Заглушки заменить на GitHub-логины Игоря, Руслана и Димы.
+# GitHub по умолчанию ждёт одобрения любого одного владельца; чтобы одобряли все, нужна настройка
+# защиты ветки main «Required approvals».
+
+/core/fastinfer/types.py         @IGOR_GITHUB @RUSLAN_GITHUB @DIMA_GITHUB
+/core/fastinfer/engines/base.py  @IGOR_GITHUB @RUSLAN_GITHUB @DIMA_GITHUB
+/core/fastinfer/__init__.py      @IGOR_GITHUB @RUSLAN_GITHUB @DIMA_GITHUB
+/core/templates/                 @IGOR_GITHUB @RUSLAN_GITHUB @DIMA_GITHUB
+/docs/core_api.md                @IGOR_GITHUB @RUSLAN_GITHUB @DIMA_GITHUB
+/docs/result_example.json        @IGOR_GITHUB @RUSLAN_GITHUB @DIMA_GITHUB

@@ -1,0 +1,14 @@
+# Семейство 6: сколько точных нулей даёт ReLU² в MLP. Анализ на CPU, без замера скорости.
+name: relu2-sparsity-4b
+family: 6
+hypothesis: после ReLU² в MLP у 4B больше 80% точных нулей, и заметная часть блоков по 32 нулевая целиком
+device: laptop-780m
+mode: analysis
+model: nano-4b
+quant: bf16
+dataset: {name: spec_bench, n: 100, seed: 0}
+gen: {max_tokens: 64, temperature: 0, reasoning: "off"}
+base:
+  engine: hf
+  analysis: {kind: activation_sparsity, block_sizes: [32, 256]}
+variants: []

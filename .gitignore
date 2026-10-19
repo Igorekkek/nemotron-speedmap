@@ -1,0 +1,44 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+
+# Виртуальные окружения
+.venv/
+venv/
+env/
+
+# Секреты: только в GitHub Secrets, Kaggle Secrets и файле окружения на сервере
+.env
+.env.*
+!.env.example
+
+# Веса и тяжёлые файлы: веса — на Hugging Face, в репозитории их нет
+*.gguf
+*.safetensors
+*.bin
+*.pt
+*.pth
+*.zip
+
+# Локальные результаты; в репозитории — только сводки experiments/*/results/*.json
+results/
+!experiments/*/results/
+experiments/*/results/*
+!experiments/*/results/*.json
+
+# Кэши
+.cache/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.ipynb_checkpoints/
+fastinfer-cache/
+
+# Редакторы и ОС
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db

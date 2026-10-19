@@ -1,0 +1,69 @@
+{
+  "_comment": "Пример result.json для core/templates/spec_compare.yaml. Числа выдуманы; из перебора γ для краткости показан один вариант.",
+  "schema": 1,
+  "job_id": "42",
+  "commit": "a1b2c3d",
+  "name": "ngram-vs-draft-9b",
+  "family": 1,
+  "mode": "speed",
+  "started_at": "2026-10-20T21:03:11Z",
+  "finished_at": "2026-10-20T21:41:57Z",
+  "device": {
+    "kind": "kaggle-t4x2",
+    "backend": "cuda",
+    "gpus": [
+      {"name": "Tesla T4", "vram_gb": 15.0, "compute_capability": "7.5"},
+      {"name": "Tesla T4", "vram_gb": 15.0, "compute_capability": "7.5"}
+    ],
+    "cpu": "Intel Xeon",
+    "cores": 4,
+    "ram_gb": 31.0,
+    "os": "Linux",
+    "bandwidth_gbs": 320,
+    "versions": {"python": "3.11", "fastinfer": "0.1.0", "llama.cpp": "620d222"}
+  },
+  "ceiling_tok_s": 63.6,
+  "variants": {
+    "base": {
+      "engine_info": {"engine": "llamacpp", "model": "nano-9b-v2", "quant": "Q4_K_M",
+                      "argv": ["-ngl", "99", "-fa", "on"]},
+      "speed": {"tok_s_median": 41.2, "tok_s_p10": 39.8, "tok_s_p90": 42.1, "ttft_ms_median": 95,
+                "total_s_median": 6.4, "acceptance": null, "tokens_per_pass": null, "frac_of_ceiling": 0.65},
+      "quality": null
+    },
+    "ngram-mod": {
+      "engine_info": {"engine": "llamacpp", "model": "nano-9b-v2", "quant": "Q4_K_M",
+                      "argv": ["-ngl", "99", "-fa", "on", "--spec-type", "ngram-mod"]},
+      "speed": {"tok_s_median": 55.8, "tok_s_p10": 44.0, "tok_s_p90": 71.3, "ttft_ms_median": 97,
+                "total_s_median": 4.9, "acceptance": 0.62, "tokens_per_pass": 1.9, "frac_of_ceiling": 0.88},
+      "quality": null
+    },
+    "draft-4b-spec_draft_n_max=4": {
+      "engine_info": {"engine": "llamacpp", "model": "nano-9b-v2", "quant": "Q4_K_M",
+                      "argv": ["-ngl", "99", "-fa", "on", "-md", "nano4b-Q4_K_M.gguf", "-ngld", "99",
+                               "--spec-draft-device", "CUDA1", "--spec-draft-n-max", "4"]},
+      "speed": {"tok_s_median": 47.5, "tok_s_p10": 43.1, "tok_s_p90": 52.0, "ttft_ms_median": 131,
+                "total_s_median": 5.6, "acceptance": 0.71, "tokens_per_pass": 2.6, "frac_of_ceiling": 0.75},
+      "quality": null
+    }
+  },
+  "comparison": {
+    "ngram-mod": {
+      "base": "base", "speedup": 1.35, "speedup_ci95": [1.27, 1.44], "total_time_ratio": 1.31,
+      "exact_match": 0.99,
+      "divergences": [{"prompt_id": "spec_bench/rag/412", "position": 187, "base_margin": 0.03}],
+      "numeric_divergences": 1, "accuracy_delta": null, "accuracy_delta_ci95": null,
+      "tokens_ratio": 1.0, "cost_ratio": null, "verdict": "быстрее, без потерь", "warnings": []
+    },
+    "draft-4b-spec_draft_n_max=4": {
+      "base": "base", "speedup": 1.15, "speedup_ci95": [1.09, 1.21], "total_time_ratio": 1.14,
+      "exact_match": 1.0, "divergences": [], "numeric_divergences": 0,
+      "accuracy_delta": null, "accuracy_delta_ci95": null, "tokens_ratio": 1.0, "cost_ratio": null,
+      "verdict": "быстрее, без потерь", "warnings": []
+    }
+  },
+  "accept": {},
+  "analysis": {},
+  "cost_usd": 0.0,
+  "warnings": []
+}

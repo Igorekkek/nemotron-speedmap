@@ -1,0 +1,18 @@
+# Семейство 1 и 4: встроенный MTP у Lightning; у MoE лучший черновик должен быть коротким.
+name: lightning-mtp-gamma
+family: 1
+hypothesis: у MoE лучшая длина черновика — 1–2 токена, дальше выигрыш съедает цена проверки
+device: laptop-780m
+mode: speed
+model: lightning-3.5
+quant: Q4_K_M
+dataset: {name: spec_bench, n: 60, seed: 0}
+gen: {max_tokens: 256, temperature: 0, reasoning: "off"}
+repeats: 3
+base:
+  engine: llamacpp
+  flags: {ngl: 99, fa: "on"}
+variants:
+  - name: mtp
+    flags: {spec_type: draft-mtp}
+    sweep: {spec_draft_n_max: [1, 2, 3, 4]}

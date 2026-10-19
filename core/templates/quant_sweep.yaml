@@ -1,0 +1,17 @@
+# Семейство 3: скорость квантов. Точность — тем же конфигом с mode: quality и dataset: gsm8k.
+name: quant-sweep-9b
+family: 3
+hypothesis: Q4_K_M быстрее Q8_0 в ~1,7 раза, а точность падает меньше чем на 1 п.п.
+device: kaggle-t4x2
+mode: speed
+model: nano-9b-v2
+quant: Q8_0
+dataset: {name: spec_bench, n: 80, seed: 0}
+gen: {max_tokens: 256, temperature: 0, reasoning: "off"}
+repeats: 3
+base:
+  engine: llamacpp
+  flags: {ngl: 99, fa: "on"}
+variants:
+  - name: q
+    sweep: {quant: [Q6_K, Q5_K_M, Q4_K_M, IQ4_XS, Q3_K_M]}

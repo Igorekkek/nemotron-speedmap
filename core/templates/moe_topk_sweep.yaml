@@ -1,0 +1,20 @@
+# Семейство 4: меньше активных экспертов без переобучения.
+name: moe-topk-30b
+family: 4
+hypothesis: 5 активных экспертов вместо 6 почти не меняют точность, 4 — уже заметно
+device: laptop-780m
+mode: quality
+model: nano-30b-a3b
+quant: Q4_K_M
+dataset: {name: gsm8k, n: 200, seed: 0}
+gen: {max_tokens: 1024, temperature: 0, reasoning: "off"}
+base:
+  engine: llamacpp
+  flags: {ngl: 99, fa: "on", np: 4, ctx: 8192}
+variants:
+  - name: topk
+    sweep:
+      override_kv:
+        - "nemotron_h_moe.expert_used_count=int:5"
+        - "nemotron_h_moe.expert_used_count=int:4"
+        - "nemotron_h_moe.expert_used_count=int:3"

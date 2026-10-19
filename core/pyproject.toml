@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fastinfer"
+version = "0.0.1"
+description = "Общее ядро экспериментов по ускорению инференса Nemotron"
+requires-python = ">=3.10"
+dependencies = [
+    "pyyaml",
+    "numpy",
+    "httpx",
+    "huggingface_hub",
+]
+
+[project.optional-dependencies]
+hf = ["torch", "transformers==5.19.0"]
+api = ["openai"]
+dev = ["pytest", "ruff"]
+
+[tool.setuptools.packages.find]
+include = ["fastinfer*"]
+
+# Настройки pytest (маркеры network, paid, gpu, slow) — в pytest.ini в корне репозитория:
+# так их видит и `pytest` из корня, и `pytest core`.

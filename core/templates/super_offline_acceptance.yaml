@@ -1,0 +1,24 @@
+# Семейства 1 и 5: как часто черновики угадывают жадные токены Super. Без замера времени.
+# База — цель (её жадные ответы — эталон), варианты — черновики, их вероятности считаются
+# на готовых ответах цели (completions с echo и logprobs). draft_cost — грубая цена шага черновика
+# относительно цели по активным параметрам: 3,5 млрд ÷ 12,7 млрд.
+name: super-offline-acceptance
+family: 1
+hypothesis: Lightning угадывает токены Super чаще, чем Nano 30B, и даёт расчётное ускорение выше 2×
+device: any
+mode: offline
+dataset: {name: spec_bench, n: 60, seed: 0}
+gen: {max_tokens: 256, temperature: 0, reasoning: "off"}
+budget_usd: 3
+base:
+  engine: api
+  model: super-3
+variants:
+  - name: nano-30b
+    engine: api
+    model: nano-30b-a3b
+    meta: {draft_cost: 0.28}
+  - name: lightning
+    engine: api
+    model: lightning-3.5
+    meta: {draft_cost: 0.28}
