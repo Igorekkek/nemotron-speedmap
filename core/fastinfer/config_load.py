@@ -6,7 +6,7 @@ from typing import Any
 
 import yaml
 
-from fastinfer import ExperimentConfig, DatasetSpec, GenParams
+from fastinfer import ExperimentConfig, DatasetSpec, GenParams, VariantSpec
 from fastinfer.shared import todo
 
 
@@ -42,8 +42,10 @@ def load_experiment_config(path: str) -> ExperimentConfig:
         raise ConfigException(errors)
 
 
-    dataset_dict: dict[str, Any] = data_yaml.get('dataset')
-    gen_params_dict: dict[str, Any] = data_yaml.get('gen', None) or dict()
+    dataset_dict: dict[str, Any] = data_yaml.get('dataset') or dict()
+    gen_params_dict: dict[str, Any] = data_yaml.get('gen') or dict()
+    base_dict: dict[str, Any] = data_yaml.get('gen') or dict()
+    variant_list = list(VariantSpec(**i) for i in data_yaml.get('variants', []))
 
     result = ExperimentConfig(
         name = data_yaml.get('name'),
@@ -55,8 +57,8 @@ def load_experiment_config(path: str) -> ExperimentConfig:
         quant = data_yaml.get('quant', None),
         dataset = DatasetSpec(**dataset_dict),
         gen = GenParams(**gen_params_dict),
-        base = data_yaml.get('base'),
-        variants = data_yaml.get('variants', []),
+        base = VariantSpec(**base_dict),
+        variants = variant_list,
         repeats = data_yaml.get('repeats', 3),
         budget_usd = data_yaml.get('budget_usd', 0),
         timeout_min = data_yaml.get('timeout_min', 600),
@@ -84,30 +86,30 @@ def config_hash(conf: ExperimentConfig) -> str:
 
 
 
+if True or "Global constants":
+    DEVICES = frozenset({"kaggle-t4x2", "laptop-780m", "mac", "pc-cpu", "any"})
+    MODES = frozenset({"speed", "quality", "offline", "analysis"})
+    ENGINES = frozenset({"llamacpp", "hf", "api"})
+    DATASETS = frozenset({"spec_bench", "gsm8k", "math500", "aime"})
+    REASONING = frozenset({"off", "on"})
+    FA_VALUES = frozenset({"on", "off", "auto"})
 
-DEVICES = frozenset({"kaggle-t4x2", "laptop-780m", "mac", "pc-cpu", "any"})
-MODES = frozenset({"speed", "quality", "offline", "analysis"})
-ENGINES = frozenset({"llamacpp", "hf", "api"})
-DATASETS = frozenset({"spec_bench", "gsm8k", "math500", "aime"})
-REASONING = frozenset({"off", "on"})
-FA_VALUES = frozenset({"on", "off", "auto"})
-
-# Флаги llama.cpp — docs/core_api.md, раздел 3.
-FLAG_KEYS = frozenset({
-    "ngl", "fa", "sm", "ts", "t", "tb", "ub", "ctx", "np",
-    "ctk", "ctv", "spec_type", "model_draft", "ngld",
-    "spec_draft_n_max", "spec_draft_n_min", "spec_draft_p_min",
-    "spec_draft_device", "reasoning_budget", "override_kv", "n_cpu_moe", "extra",
-})
-INT_FLAGS = frozenset({
-    "ngl", "t", "tb", "ub", "ctx", "np", "ngld",
-    "spec_draft_n_max", "spec_draft_n_min", "reasoning_budget", "n_cpu_moe",
-})
-FLAG_MIN = {
-    "ngl": 0, "t": 0, "tb": 0, "ub": 1, "ctx": 1, "np": 1, "ngld": 0,
-    "spec_draft_n_max": 0, "spec_draft_n_min": 0, "reasoning_budget": -1, "n_cpu_moe": 0,
-}
-GEN_FIELDS = frozenset(field.name for field in dataclasses.fields(GenParams))
+    # Флаги llama.cpp — docs/core_api.md, раздел 3.
+    FLAG_KEYS = frozenset({
+        "ngl", "fa", "sm", "ts", "t", "tb", "ub", "ctx", "np",
+        "ctk", "ctv", "spec_type", "model_draft", "ngld",
+        "spec_draft_n_max", "spec_draft_n_min", "spec_draft_p_min",
+        "spec_draft_device", "reasoning_budget", "override_kv", "n_cpu_moe", "extra",
+    })
+    INT_FLAGS = frozenset({
+        "ngl", "t", "tb", "ub", "ctx", "np", "ngld",
+        "spec_draft_n_max", "spec_draft_n_min", "reasoning_budget", "n_cpu_moe",
+    })
+    FLAG_MIN = {
+        "ngl": 0, "t": 0, "tb": 0, "ub": 1, "ctx": 1, "np": 1, "ngld": 0,
+        "spec_draft_n_max": 0, "spec_draft_n_min": 0, "reasoning_budget": -1, "n_cpu_moe": 0,
+    }
+    GEN_FIELDS = frozenset(field.name for field in dataclasses.fields(GenParams))
 
 
 def validate_config(data: dict[str, Any]) -> list[str]:
