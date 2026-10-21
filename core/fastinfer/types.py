@@ -6,6 +6,10 @@
 from dataclasses import dataclass, field
 
 
+
+def todo(*args):
+    pass
+
 @dataclass
 class Prompt:
     id: str                          # "spec_bench/qa/81"
