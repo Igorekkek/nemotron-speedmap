@@ -44,7 +44,7 @@ def load_experiment_config(path: str) -> ExperimentConfig:
 
     dataset_dict: dict[str, Any] = data_yaml.get('dataset') or dict()
     gen_params_dict: dict[str, Any] = data_yaml.get('gen') or dict()
-    base_dict: dict[str, Any] = data_yaml.get('gen') or dict()
+    base_dict: dict[str, Any] = data_yaml.get('base') or dict()
     variant_list = list(VariantSpec(**i) for i in data_yaml.get('variants', []))
 
     result = ExperimentConfig(
@@ -119,6 +119,11 @@ def validate_config(data: dict[str, Any]) -> list[str]:
     файлов (docs/core_api.md, разделы 3 и 7.2). Ошибки не бросаются, чтобы показать их все.
     """
     errors: list[str] = []
+
+    # FakeEngine и локальные промпты — для тестовых сценариев без моделей и сети.
+    allowed_engines = ENGINES | {"fake"}
+    allowed_datasets = DATASETS | {"local"}
+    fake_flags = frozenset({"fake_speed", "fake_seed"})
 
     def add(where: str, message: str) -> None:
         errors.append(f"{where}: {message}")
@@ -200,12 +205,20 @@ def validate_config(data: dict[str, Any]) -> list[str]:
         elif not isinstance(value, str) or not value.strip():
             add(where, f"expected non-empty str, got {type(value).__name__}")
 
-    def check_flags(flags: Any, where: str) -> None:
+    def check_flags(flags: Any, where: str, engine: str = "llamacpp") -> None:
         if not isinstance(flags, dict):
             add(where, f"expected dict, got {type(flags).__name__}")
             return
         for key, value in flags.items():
-            if key not in FLAG_KEYS:
+            if key in fake_flags:
+                if engine != "fake":
+                    add(f"{where}.{key}", "unknown llama.cpp flag")
+                elif key == "fake_speed":
+                    if not (is_number(value) and value > 0):
+                        add(f"{where}.{key}", "expected number > 0")
+                elif not is_int(value):
+                    add(f"{where}.{key}", "expected int")
+            elif key not in FLAG_KEYS:
                 add(f"{where}.{key}", "unknown llama.cpp flag")
             else:
                 check_flag_value(key, value, f"{where}.{key}")
@@ -251,13 +264,13 @@ def validate_config(data: dict[str, Any]) -> list[str]:
             if not isinstance(name, str) or not name.strip():
                 add(f"{where}.name", "required non-empty str")
         engine = spec.get("engine", "llamacpp")
-        if not isinstance(engine, str) or engine not in ENGINES:
-            add(f"{where}.engine", f"expected one of {sorted(ENGINES)}, got {engine!r}")
+        if not isinstance(engine, str) or engine not in allowed_engines:
+            add(f"{where}.engine", f"expected one of {sorted(allowed_engines)}, got {engine!r}")
         for key in ("model", "quant"):
             if key in spec:
                 check_string(spec[key], f"{where}.{key}")
         if "flags" in spec:
-            check_flags(spec["flags"], f"{where}.flags")
+            check_flags(spec["flags"], f"{where}.flags", engine)
         if "gen" in spec:
             check_gen(spec["gen"], f"{where}.gen")
         for key in ("analysis", "meta", "sweep"):
@@ -274,8 +287,8 @@ def validate_config(data: dict[str, Any]) -> list[str]:
             if key not in {"name", "n", "seed", "tasks"}:
                 add(f"{where}.{key}", "unknown dataset field")
         name = dataset.get("name")
-        if not isinstance(name, str) or name not in DATASETS:
-            add(f"{where}.name", f"expected one of {sorted(DATASETS)}, got {name!r}")
+        if not isinstance(name, str) or name not in allowed_datasets:
+            add(f"{where}.name", f"expected one of {sorted(allowed_datasets)}, got {name!r}")
         if "n" in dataset:
             n = dataset["n"]
             if n is not None and not (is_int(n) and n > 0):

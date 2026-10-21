@@ -21,13 +21,14 @@ class FakeEngineV1(Engine):
     name: str = "Fake engine"
 
 
-    def __init__(self, seed = 123):
+    def __init__(self, speed = 1, seed = 123):
         self.randomCl = random.Random(seed)
         self.random = self.randomCl.random
         self.generating_seed = int(self.random()*10000)
 
         self.model = "fake-v1"
-        self.base_tok_s = 100.0
+        self.base_tok_s = 100.0*speed
+        self.speed = speed
         self.flags = {}
 
         self.running: bool = False
@@ -74,7 +75,7 @@ class FakeEngineV1(Engine):
         """Ответить на один промпт: по одной генерации на каждый ход (реплику)."""
         self._check_valid()
 
-        speed = max(1.0, float(fake_speed))
+        speed = self.speed*max(1.0, float(fake_speed))
 
         generations: list[Generation] = []
 

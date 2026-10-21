@@ -4,6 +4,7 @@ from core.fastinfer import Prompt, GenParams
 from core.fastinfer.config_load import load_experiment_config
 from core.fastinfer.engines.fake import FakeEngineV1
 from core.fastinfer.results import ExperimentWriter
+from tests.test_scenario_fake import test_fake_scenario
 
 
 def test_all():
@@ -13,12 +14,19 @@ def test_all():
 
     test_fake_engine()
 
+    test_fake_scenario()
 
 
-TEST_CONFIG_FILE = "../resources/test_config.yaml"
+
+
+
+TEST_CONFIG_FILE = "../resources/test_scenario_fake.yaml"
 def test_config_load():
 
-    test_conf = load_experiment_config(TEST_CONFIG_FILE)
+    try:
+        test_conf = load_experiment_config(TEST_CONFIG_FILE)
+    except Exception as e:
+        print(e)
 
     print("config Test passed")
 

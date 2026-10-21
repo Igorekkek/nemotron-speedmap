@@ -1,0 +1,42 @@
+# Конфигурация сценария шага 1: сквозной путь на FakeEngine.
+# Запускается из core/tests/test_scenario_fake.py::test_fake_scenario().
+# Сеть не нужна, реальные модели не загружаются.
+
+name: test-scenario-fake
+family: 1
+hypothesis: FakeEngine проверяет путь конфиг -> база и вариант -> замер -> папка результата
+device: any
+mode: speed
+model: fake-v1
+
+dataset:
+  name: local
+  n: 4
+  seed: 0
+
+gen:
+  max_tokens: 24
+  temperature: 0.0
+  reasoning: "off"
+  logprobs: 2
+  seed: 0
+
+# Два повтора: база и вариант чередуются, прогрев не считается.
+repeats: 2
+budget_usd: 0.0
+timeout_min: 5
+
+base:
+  name: base
+  engine: fake
+  flags:
+    fake_speed: 1.0
+    fake_seed: 123
+
+variants:
+  - name: faster
+    engine: fake
+    flags:
+      fake_speed: 1.35
+
+notes: "Шаг 1: только сквозной путь, цифры синтетические."
