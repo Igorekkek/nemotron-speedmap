@@ -6,7 +6,9 @@ if __name__=='__main__':
     print("fastinfer module initialized")
 
 
-    test_fake_engine()
+    #test_fake_engine()
+
+    test_all()
 
 
 

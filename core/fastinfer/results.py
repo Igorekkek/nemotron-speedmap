@@ -7,8 +7,9 @@ from dataclasses import asdict
 from importlib import metadata
 from pathlib import Path
 
-from core.fastinfer import ExperimentConfig
-from core.fastinfer.types import todo, Generation
+from fastinfer import ExperimentConfig, Generation
+from fastinfer.shared import todo
+
 
 from config_load import config_hash
 

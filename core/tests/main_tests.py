@@ -11,6 +11,8 @@ def test_all():
 
     test_result_write()
 
+    test_fake_engine()
+
 
 
 TEST_CONFIG_FILE = "../resources/test_config.yaml"

@@ -6,8 +6,8 @@ from typing import Any
 
 import yaml
 
-from core.fastinfer import ExperimentConfig, DatasetSpec, GenParams
-from core.fastinfer.types import todo
+from fastinfer import ExperimentConfig, DatasetSpec, GenParams
+from fastinfer.shared import todo
 
 
 class ConfigException(Exception):
@@ -53,7 +53,7 @@ def load_experiment_config(path: str) -> ExperimentConfig:
 
     if (len(errors)>0):
         raise ConfigException(errors)
-    
+
 
     result = ExperimentConfig(
         name = data_yaml.get('name'),
