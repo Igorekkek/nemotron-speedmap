@@ -1,6 +1,6 @@
 # Конфигурация сценария шага 1: сквозной путь на FakeEngine.
 # Запускается из core/tests/test_scenario_fake.py::test_fake_scenario().
-# Сеть не нужна, реальные модели не загружаются.
+# Промпты берутся из core/resources/local.jsonl, сеть и реальные модели не нужны.
 
 name: test-scenario-fake
 family: 1
@@ -21,7 +21,7 @@ gen:
   logprobs: 2
   seed: 0
 
-# Два повтора: база и вариант чередуются, прогрев не считается.
+# Два повтора: база и вариант считаются на одних и тех же промптах.
 repeats: 2
 budget_usd: 0.0
 timeout_min: 5

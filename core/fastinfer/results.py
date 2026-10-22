@@ -11,7 +11,7 @@ from fastinfer import ExperimentConfig, Generation
 from fastinfer.shared import todo
 
 
-from config_load import config_hash
+from fastinfer.config_load import config_hash
 
 
 class ExperimentWriter:

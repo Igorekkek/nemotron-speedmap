@@ -79,7 +79,7 @@ def _run_engine_measurement(engine: Engine, prompts: Sequence[Prompt], gen: GenP
     results = []
     for i in range(repeats):
         for prompt in prompts:
-            results.append(engine.generate(prompt, gen))
+            results.extend(engine.generate(prompt, gen))
     return results
 
 
